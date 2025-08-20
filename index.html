@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Mental Calculation Training</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .screen {
+            display: none;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            margin: 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+        
+        .btn-tertiary {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+        }
+        
+        .settings-group {
+            margin: 25px 0;
+            text-align: left;
+        }
+        
+        .settings-group label {
+            display: block;
+            margin: 15px 0 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus, input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .problem-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .problem {
+            font-size: 42px;
+            margin: 20px 0;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        
+        .answer-input {
+            font-size: 28px;
+            padding: 18px;
+            width: 100%;
+            text-align: center;
+            border: 3px solid #3498db;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+        
+        .answer-input:focus {
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+        }
+        
+        .feedback {
+            font-size: 22px;
+            margin: 20px 0;
+            min-height: 30px;
+            text-align: center;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 10px;
+        }
+        
+        .correct {
+            color: #27ae60;
+            background: rgba(39, 174, 96, 0.1);
+            border: 2px solid #27ae60;
+        }
+        
+        .incorrect {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid #e74c3c;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+            gap: 15px;
+        }
+        
+        .stat {
+            background: linear-gradient(135deg, #f6f9fc, #eef2f7);
+            padding: 20px;
+            border-radius: 15px;
+            flex: 1;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat h3 {
+            color: #7f8c8d;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .progress-container {
+            margin: 30px 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .results {
+            margin: 25px 0;
+        }
+        
+        .result-item {
+            margin: 20px 0;
+            font-size: 20px;
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #bdc3c7;
+        }
+        
+        .highlight {
+            font-weight: 700;
+            color: #2980b9;
+        }
+        
+        .digit-change {
+            animation: digitChange 0.5s ease;
+        }
+        
+        @keyframes digitChange {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .difficulty-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 600px) {
+            .problem {
+                font-size: 32px;
+            }
+            
+            .answer-input {
+                font-size: 22px;
+            }
+            
+            .stats {
+                flex-direction: column;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="difficulty-badge">Medium</div>
+            <h1>Mental Calculation Training</h1>
+            <p>Sharpen your math skills with professional training</p>
+            <div class="timer" id="timer">00:00</div>
+        </div>
+        
+        <div class="content">
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="screen active">
+                <h2 style="text-align: center; color: #2c3e50; margin-bottom: 20px;">Welcome to Math Trainer Pro</h2>
+                <p style="text-align: center; margin-bottom: 30px; font-size: 18px; color: #7f8c8d;">
+                    Improve your mental calculation skills with personalized training sessions
+                </p>
+                <div style="text-align: center;">
+                    <button id="start-btn" class="btn"><i class="fas fa-play-circle"></i> Start Training</button>
+                    <button id="settings-btn" class="btn btn-secondary"><i class="fas fa-cog"></i> Settings</button>
+                </div>
+                
+                <div style="margin-top: 40px;">
+                    <h3 style="color: #2c3e50; text-align: center; margin-bottom: 15px;">Why Mental Math Matters</h3>
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
+                        <div style="background: #e8f4fc; padding: 15px; border-radius: 10px; width: 140px; text-align: center;">
+                            <i class="fas fa-brain" style="font-size: 30px; color: #3498db; margin-bottom: 10px;"></i>
+                            <p style="font-size: 14px;">Improves cognitive function</p>
+                        </div>
+                        <div style="background: #fce8e8; padding: 15px; border-radius: 10px; width: 140px; text-align: center;">
+                            <i class="fas fa-bolt" style="font-size: 30px; color: #e74c3c; margin-bottom: 10px;"></i>
+                            <p style="font-size: 14px;">Faster decision making</p>
+                        </div>
+                        <div style="background: #e8f6e8; padding: 15px; border-radius: 10px; width: 140px; text-align: center;">
+                            <i class="fas fa-chart-line" style="font-size: 30px; color: #2ecc71; margin-bottom: 10px;"></i>
+                            <p style="font-size: 14px;">Better academic performance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Screen -->
+            <div id="settings-screen" class="screen">
+                <h2 style="text-align: center; color: #2c3e50; margin-bottom: 25px;">Training Settings</h2>
+                
+                <div class="settings-group">
+                    <label for="difficulty"><i class="fas fa-signal"></i> Difficulty Level:</label>
+                    <select id="difficulty">
+                        <option value="easy">Easy (Numbers 1-15)</option>
+                        <option value="medium" selected>Medium (Numbers 1-30)</option>
+                        <option value="hard">Hard (Numbers 1-50)</option>
+                        <option value="expert">Expert (Numbers 1-100)</option>
+                    </select>
+                </div>
+                
+                <div class="settings-group">
+                    <label for="operation"><i class="fas fa-calculator"></i> Math Operation:</label>
+                    <select id="operation">
+                        <option value="addition">Addition (+)</option>
+                        <option value="subtraction">Subtraction (-)</option>
+                        <option value="multiplication">Multiplication (×)</option>
+                        <option value="division">Division (÷)</option>
+                        <option value="mixed">Mixed Operations</option>
+                    </select>
+                </div>
+                
+                <div class="settings-group">
+                    <label for="problem-count"><i class="fas fa-list-ol"></i> Number of Problems:</label>
+                    <input type="number" id="problem-count" min="5" max="50" value="10">
+                </div>
+                
+                <div class="controls">
+                    <button id="save-settings" class="btn btn-tertiary"><i class="fas fa-save"></i> Save & Start</button>
+                    <button id="back-btn" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</button>
+                </div>
+            </div>
+            
+            <!-- Training Screen -->
+            <div id="training-screen" class="screen">
+                <h2 style="text-align: center; color: #2c3e50;">Mental Calculation Challenge</h2>
+                
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Progress</span>
+                        <span id="progress-text">1/10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progress" class="progress"></div>
+                    </div>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <h3>Correct</h3>
+                        <div id="correct-count" class="stat-value">0</div>
+                    </div>
+                    <div class="stat">
+                        <h3>Time</h3>
+                        <div id="current-time" class="stat-value">00:00</div>
+                    </div>
+                    <div class="stat">
+                        <h3>Speed</h3>
+                        <div id="speed" class="stat-value">0s/q</div>
+                    </div>
+                </div>
+                
+                <div class="problem-container">
+                    <div id="problem" class="problem">17 + 25 = ?</div>
+                    <input type="number" id="answer-input" class="answer-input" placeholder="Enter your answer" autofocus>
+                    <div id="feedback" class="feedback"></div>
+                </div>
+                
+                <div class="controls">
+                    <button id="next-btn" class="btn"><i class="fas fa-forward"></i> Next</button>
+                    <button id="end-session" class="btn btn-secondary"><i class="fas fa-stop-circle"></i> End Session</button>
+                </div>
+            </div>
+            
+            <!-- Results Screen -->
+            <div id="results-screen" class="screen">
+                <h2 style="text-align: center; color: #2c3e50; margin-bottom: 25px;">Session Results</h2>
+                
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <i class="fas fa-trophy" style="font-size: 60px; color: #f1c40f;"></i>
+                </div>
+                
+                <div class="results">
+                    <div class="result-item">
+                        <span>Total Problems:</span>
+                        <span id="total-problems" class="highlight">10</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Correct Answers:</span>
+                        <span id="correct-answers" class="highlight">8</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Accuracy:</span>
+                        <span id="accuracy" class="highlight">80%</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Time Taken:</span>
+                        <span id="time-taken" class="highlight">02:30</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Average Speed:</span>
+                        <span id="average-speed" class="highlight">15s/question</span>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="restart-btn" class="btn"><i class="fas fa-redo"></i> Try Again</button>
+                    <button id="new-settings-btn" class="btn btn-secondary"><i class="fas fa-cog"></i> Change Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const screens = document.querySelectorAll('.screen');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const settingsScreen = document.getElementById('settings-screen');
+        const trainingScreen = document.getElementById('training-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        
+        // Buttons
+        const startBtn = document.getElementById('start-btn');
+        const settingsBtn = document.getElementById('settings-btn');
+        const saveSettingsBtn = document.getElementById('save-settings');
+        const backBtn = document.getElementById('back-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const endSessionBtn = document.getElementById('end-session');
+        const restartBtn = document.getElementById('restart-btn');
+        const newSettingsBtn = document.getElementById('new-settings-btn');
+        
+        // Training elements
+        const problemElement = document.getElementById('problem');
+        const answerInput = document.getElementById('answer-input');
+        const feedbackElement = document.getElementById('feedback');
+        const correctCountElement = document.getElementById('correct-count');
+        const progressElement = document.getElementById('progress');
+        const progressTextElement = document.getElementById('progress-text');
+        const currentTimeElement = document.getElementById('current-time');
+        const speedElement = document.getElementById('speed');
+        const timerElement = document.getElementById('timer');
+        
+        // Results elements
+        const totalProblemsElement = document.getElementById('total-problems');
+        const correctAnswersElement = document.getElementById('correct-answers');
+        const accuracyElement = document.getElementById('accuracy');
+        const timeTakenElement = document.getElementById('time-taken');
+        const averageSpeedElement = document.getElementById('average-speed');
+        
+        // Settings elements
+        const difficultySelect = document.getElementById('difficulty');
+        const operationSelect = document.getElementById('operation');
+        const problemCountInput = document.getElementById('problem-count');
+        const difficultyBadge = document.querySelector('.difficulty-badge');
+        
+        // App state
+        let currentProblem = null;
+        let correctAnswers = 0;
+        let totalProblems = 10;
+        let problemsSolved = 0;
+        let startTime = null;
+        let timerInterval = null;
+        let digitChangeInterval = null;
+        let currentDigits = [];
+        
+        // Event listeners
+        startBtn.addEventListener('click', () => showScreen(settingsScreen));
+        settingsBtn.addEventListener('click', () => showScreen(settingsScreen));
+        backBtn.addEventListener('click', () => showScreen(welcomeScreen));
+        saveSettingsBtn.addEventListener('click', startTraining);
+        nextBtn.addEventListener('click', checkAnswer);
+        endSessionBtn.addEventListener('click', endSession);
+        restartBtn.addEventListener('click', () => showScreen(settingsScreen));
+        newSettingsBtn.addEventListener('click', () => showScreen(settingsScreen));
+        
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+        
+        difficultySelect.addEventListener('change', updateDifficultyBadge);
+        
+        // Function to show a specific screen
+        function showScreen(screen) {
+            screens.forEach(s => s.classList.remove('active'));
+            screen.classList.add('active');
+        }
+        
+        // Update difficulty badge
+        function updateDifficultyBadge() {
+            const difficulty = difficultySelect.value;
+            difficultyBadge.textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+        }
+        
+        // Start training session
+        function startTraining() {
+            // Get settings
+            totalProblems = parseInt(problemCountInput.value);
+            
+            // Reset state
+            correctAnswers = 0;
+            problemsSolved = 0;
+            correctCountElement.textContent = '0';
+            progressElement.style.width = '0%';
+            progressTextElement.textContent = `0/${totalProblems}`;
+            
+            // Start timer
+            startTime = new Date();
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+            
+            // Start digit change animation
+            startDigitChangeAnimation();
+            
+            // Generate first problem
+            generateProblem();
+            
+            // Show training screen
+            showScreen(trainingScreen);
+            
+            // Focus on answer input
+            answerInput.focus();
+        }
+        
+        // Update timer display
+        function updateTimer() {
+            const now = new Date();
+            const elapsed = Math.floor((now - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            
+            timerElement.textContent = `${minutes}:${seconds}`;
+            currentTimeElement.textContent = `${minutes}:${seconds}`;
+            
+            // Update speed
+            if (problemsSolved > 0) {
+                const avgTime = Math.floor(elapsed / problemsSolved);
+                speedElement.textContent = `${avgTime}s/q`;
+            }
+        }
+        
+        // Start digit change animation
+        function startDigitChangeAnimation() {
+            clearInterval(digitChangeInterval);
+            
+            digitChangeInterval = setInterval(() => {
+                if (currentDigits.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * currentDigits.length);
+                    const digitElement = currentDigits[randomIndex];
+                    
+                    digitElement.classList.add('digit-change');
+                    setTimeout(() => {
+                        digitElement.classList.remove('digit-change');
+                    }, 500);
+                }
+            }, 1500);
+        }
+        
+        // Generate a new math problem
+        function generateProblem() {
+            const difficulty = difficultySelect.value;
+            const operationType = operationSelect.value;
+            
+            let num1, num2, operation, answer;
+            
+            // Determine number ranges based on difficulty
+            let maxNum;
+            switch(difficulty) {
+                case 'easy': maxNum = 15; break;
+                case 'medium': maxNum = 30; break;
+                case 'hard': maxNum = 50; break;
+                case 'expert': maxNum = 100; break;
+                default: maxNum = 30;
+            }
+            
+            // Determine operation
+            let operations;
+            if (operationType === 'mixed') {
+                operations = ['addition', 'subtraction', 'multiplication', 'division'];
+                operation = operations[Math.floor(Math.random() * operations.length)];
+            } else {
+                operation = operationType;
+            }
+            
+            // Generate numbers based on operation
+            switch(operation) {
+                case 'addition':
+                    num1 = Math.floor(Math.random() * maxNum) + 1;
+                    num2 = Math.floor(Math.random() * maxNum) + 1;
+                    answer = num1 + num2;
+                    operation = '+';
+                    break;
+                case 'subtraction':
+                    num2 = Math.floor(Math.random() * maxNum) + 1;
+                    num1 = Math.floor(Math.random() * maxNum) + num2;
+                    answer = num1 - num2;
+                    operation = '-';
+                    break;
+                case 'multiplication':
+                    num1 = Math.floor(Math.random() * (maxNum/5)) + 1;
+                    num2 = Math.floor(Math.random() * (maxNum/5)) + 1;
+                    answer = num1 * num2;
+                    operation = '×';
+                    break;
+                case 'division':
+                    num2 = Math.floor(Math.random() * (maxNum/5)) + 1;
+                    answer = Math.floor(Math.random() * (maxNum/5)) + 1;
+                    num1 = num2 * answer;
+                    operation = '÷';
+                    break;
+            }
+            
+            currentProblem = { num1, num2, operation, answer };
+            
+            // Create problem HTML with spans for each digit for animation
+            const problemHTML = `
+                <span>${num1}</span> 
+                <span>${operation}</span> 
+                <span>${num2}</span> 
+                <span>=</span> 
+                <span>?</span>
+            `;
+            
+            problemElement.innerHTML = problemHTML;
+            
+            // Store digit elements for animation
+            currentDigits = Array.from(problemElement.querySelectorAll('span'));
+            
+            // Clear input and feedback
+            answerInput.value = '';
+            feedbackElement.textContent = '';
+            feedbackElement.className = 'feedback';
+        }
+        
+        // Check the user's answer
+        function checkAnswer() {
+            const userAnswer = parseInt(answerInput.value);
+            
+            if (isNaN(userAnswer)) {
+                feedbackElement.textContent = 'Please enter a valid number';
+                feedbackElement.className = 'feedback incorrect';
+                return;
+            }
+            
+            problemsSolved++;
+            
+            if (userAnswer === currentProblem.answer) {
+                correctAnswers++;
+                feedbackElement.textContent = 'Correct! Well done!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = `Incorrect. The answer was ${currentProblem.answer}.`;
+                feedbackElement.className = 'feedback incorrect';
+            }
+            
+            // Update stats
+            correctCountElement.textContent = correctAnswers;
+            progressElement.style.width = `${(problemsSolved / totalProblems) * 100}%`;
+            progressTextElement.textContent = `${problemsSolved}/${totalProblems}`;
+            
+            // If session is complete, show results
+            if (problemsSolved >= totalProblems) {
+                setTimeout(endSession, 1500);
+            } else {
+                // Generate new problem after a delay
+                setTimeout(generateProblem, 1500);
+            }
+        }
+        
+        // End the training session
+        function endSession() {
+            clearInterval(timerInterval);
+            clearInterval(digitChangeInterval);
+            
+            // Calculate time taken
+            const endTime = new Date();
+            const timeTaken = Math.floor((endTime - startTime) / 1000);
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            const avgTimePerQuestion = Math.floor(timeTaken / totalProblems);
+            
+            // Update results
+            totalProblemsElement.textContent = totalProblems;
+            correctAnswersElement.textContent = correctAnswers;
+            accuracyElement.textContent = `${Math.round((correctAnswers / totalProblems) * 100)}%`;
+            timeTakenElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            averageSpeedElement.textContent = `${avgTimePerQuestion}s/question`;
+            
+            // Show results screen
+            showScreen(resultsScreen);
+        }
+        
+        // Initialize the app
+        updateDifficultyBadge();
+    </script>
+</body>
+</html>
